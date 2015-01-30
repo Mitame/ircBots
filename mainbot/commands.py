@@ -26,7 +26,7 @@ class Command():
         pass
     
     def notify(self,event,msg):
-        self.notify(msg)
+        self.bot.connection.notice(event.source.nick,msg)
 
 
 class ping(Command):
@@ -37,7 +37,7 @@ class ping(Command):
     defaultArgs = []
     
     def on_call(self,event,*args):
-        self.notify("PONG")
+        self.notify(event,"PONG")
     
           
 class die(Command):
@@ -63,8 +63,7 @@ class cnJoke(Command):
         global json, urllib
         import json
         import urllib.request
-        
-        
+
     def on_call(self,event,*args):
         x = urllib.request.urlopen("http://api.icndb.com/jokes/random")
         z = str(x.read(),"utf8")
@@ -141,6 +140,8 @@ class vote(Command):
         self.bot.sendPubMsg(event,alert)
         
     def checkPermissions(self, event, *args):
+        if len(args) == 0:
+            return True
         base = args[0]
         if base in ("create","results","close"):
             if self.bot.getPermLevel(event) >= 1:
@@ -154,6 +155,8 @@ class vote(Command):
                 return False
     
     def checkArgs(self, event, *args):
+        if len(args) == 0:
+            return 0
         return True
     
     def getResults(self,event,*args):
@@ -212,11 +215,34 @@ class help(Command):
                 commands.append(x[0])
         
         commands.sort()
-        self.notify("---Commands avaliable to you---")
+        self.notify(event,"---Commands avaliable to you---")
         for cmd in commands:
-            self.notify(self.bot.callsign+":"+cmd)
-        self.notify("-------------------------------")
+            self.notify(event,self.bot.callsign+":"+cmd)
+        self.notify(event,"-------------------------------")
+
+       
+class flushLog(Command):
+    arguments = []
+    permissionLevel = 3
+    permitExtraArgs = False
+    manArgCheck = False
+    defaultArgs = []
+    callname = "flushlog"  
+    
+    def on_call(self, event, *args):
+        self.bot.logfile.flush()
+
+
+class say(Command):
+    guments = []
+    permissionLevel = 3
+    permitExtraArgs = True
+    manArgCheck = False
+    defaultArgs = []
+    callname = "say"
+    
+    def on_call(self, event, *args):
+        self.bot.sendPubMsg(event," ".join(args))
         
-    
-    
+        
         
