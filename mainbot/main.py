@@ -8,7 +8,7 @@ class settings():
     callsign = "pollbot"
     botPrefix = "MMI-"
     manOplist = ["AlexCarolan","MrMindImplosion","Humanhum"]
-    chatlog = open("/home/leviwright/irclogs/chat.log","a")
+    chatlog = open("./irclogs/chat.log","a")
     allowExclaimCommand = True
     
 class BaseBot(irc.bot.SingleServerIRCBot):
