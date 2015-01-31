@@ -22,7 +22,7 @@ class cca(Command):
             self.printThread.start()
         elif base == "run":
             self.sub.sendline(" ".join(args[1:]))
-        
+            
     def on_die(self,event):
         self.sub.kill()
     
@@ -33,3 +33,6 @@ class cca(Command):
         
         except KeyboardInterrupt:
             pass
+        
+        
+        

@@ -22,9 +22,12 @@ class BaseBot(irc.bot.SingleServerIRCBot):
         self.logfile = settings.chatlog
         
     def die(self,event, msg="Bye, cruel world!"):
-        for x in self.commands.keys():
-            self.commands[x].on_die(event)
-        irc.bot.SingleServerIRCBot.die(self, event,msg=msg)
+        try:
+            for x in self.commands.keys():
+                self.commands[x].on_die(event)
+        except:
+            pass
+        irc.bot.SingleServerIRCBot.die(self, msg=msg)
     
     def isPermitted(self,event):
         return event.source.nick in settings.manOplist
@@ -142,7 +145,7 @@ class BaseBot(irc.bot.SingleServerIRCBot):
             cmdclass.on_call(event,*args)
         else:
             self.connection.notice(event.source.nick,"%s is not a valid command." % cmd)
-                
+        
         
 def main():
     bot = BaseBot(irc.bot.ServerSpec("home.mrmindimplosion.co.uk",6667),"#BANANARAMA","PollBot")
@@ -155,6 +158,7 @@ def main():
     commands.help(bot)
     commands.flushLog(bot)
     commands.say(bot)
+    commands.op(bot)
     
     import textAdv
     textAdv.cca(bot)

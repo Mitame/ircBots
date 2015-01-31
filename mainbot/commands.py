@@ -54,11 +54,7 @@ class die(Command):
     defaultArgs = []
     
     def on_call(self,event,*args):
-        try:
-            self.bot.die(event, " ".join(args))
-        except:
-            self.priv
-            pass
+        self.bot.die(event, " ".join(args))
 
 
 class cnJoke(Command):
@@ -253,6 +249,28 @@ class say(Command):
     def on_call(self, event, *args):
         self.bot.sendPubMsg(event," ".join(args))
 
+class op(Command):
+    arguments = ["str"]
+    permissionLevel = 3
+    permitExtraArgs = False
+    manArgCheck = False
+    defaultArgs = []
+    callname = "op"
+    
+    def on_call(self, event, *args):
+        print(args[0])
+        self.bot.connection.mode("#BANANARAMA","+o %s" % args[0])
 
+class deop(Command):
+    arguments = ["str"]
+    permissionLevel = 3
+    permitExtraArgs = False
+    manArgCheck = False
+    defaultArgs = []
+    callname = "deop"
+    
+    def on_call(self, event, *args):
+        print(args[0])
+        self.bot.connection.mode("#BANANARAMA","-o %s" % args[0])
             
         
