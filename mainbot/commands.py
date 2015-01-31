@@ -13,10 +13,10 @@ class Command():
         bot.commands[self.callname] = self
     
     def on_call(self,event,*args):
-        pass
+        self.bot.do_command("help "+" ".join(args))
     
     def on_fail(self,event):
-        self.bot.cnnection.notice(event.source.nick,\
+        self.notify(event.source.nick,\
         "The command must follow the syntax: /%s "% self.callname+" "+str(self.arguments))
     
     def checkPermissions(self,event,*args):
@@ -25,10 +25,16 @@ class Command():
     def checkArgs(self,event,*args):
         pass
     
-    def notify(self,event,msg):
+    def privMsg(self,event,msg):
         self.bot.connection.notice(event.source.nick,msg)
-
-
+    
+    def on_die(self,event):
+        pass
+    
+    def pubMsg(self,event,msg):
+        self.bot.sendPubMsg(event,msg)
+        
+        
 class ping(Command):
     arguments = []
     permissionLevel = 2
@@ -37,7 +43,7 @@ class ping(Command):
     defaultArgs = []
     
     def on_call(self,event,*args):
-        self.notify(event,"PONG")
+        self.privMsg(event,"PONG")
     
           
 class die(Command):
@@ -48,7 +54,11 @@ class die(Command):
     defaultArgs = []
     
     def on_call(self,event,*args):
-        self.bot.die(" ".join(args))
+        try:
+            self.bot.die(event, " ".join(args))
+        except:
+            self.priv
+            pass
 
 
 class cnJoke(Command):
@@ -74,7 +84,7 @@ class cnJoke(Command):
             print(z)
     
     def on_fail(self,event):
-        self.bot.cnnection.notice(event.source.nick,\
+        self.notify(event.source.nick,\
         "You failed to type the command correctly puny human. \nChuck Norris will roundhouse kick you in the face shortly."% self.callname+" "+str(self.arguments))
 
 
@@ -106,21 +116,20 @@ class vote(Command):
         self.pollids = {}
         self.currentPoll = ""
     
-    def alert(self,event,msg):
-        self.bot.sendPubMsg(event,msg)
+    
         
     def createPoll(self,event,name,question,*options):
         self.currentPoll = name
         self.polls[name] = self.poll(*options)
         self.polls[len(self.polls.keys())] = name
-        self.alert(event,"""%s has started a poll!""" % event.source.nick)
-        self.alert(event,"---%s---" % question)
+        self.pubMsg(event,"""%s has started a poll!""" % event.source.nick)
+        self.pubMsg(event,"---%s---" % question)
         
         for x in range(len(self.polls[name].voteids)):
-            self.alert(event,str(x)+" :\t"+self.polls[name].getVote(x))
+            self.pubMsg(event,str(x)+" :\t"+self.polls[name].getVote(x))
         
-        self.alert(event,"To vote, type in '%s:vote #', where '#' is your vote." % self.bot.callsign)
-        self.alert(event,"---Note, you can't change your mind after you have voted, so think carefully.")
+        self.pubMsg(event,"To vote, type in '%s:vote #', where '#' is your vote." % self.bot.callsign)
+        self.pubMsg(event,"---Note, you can't change your mind after you have voted, so think carefully.")
     
     def castVote(self,event,*args):
         if self.currentPoll == "":
@@ -172,7 +181,7 @@ class vote(Command):
         self.bot.sendPubMsg(event,"--------------------------")
     
     def closePoll(self,event,name):        
-        self.alert(event, "The voting has now ended. The final results are:")
+        self.pubMsg(event, "The voting has now ended. The final results are:")
         for id in self.polls[self.currentPoll].voteids:
             x = self.polls[self.currentPoll].voteids[id]
             
@@ -192,7 +201,7 @@ class vote(Command):
             try:
                 self.closePoll(event,self.currentPoll)
             except NameError:
-                self.alert("No poll to close.")
+                self.pubMsg("No poll to close.")
         else:
             if args[0].isdecimal():
                 self.castVote(event,int(args[0]))
@@ -215,10 +224,10 @@ class help(Command):
                 commands.append(x[0])
         
         commands.sort()
-        self.notify(event,"---Commands avaliable to you---")
+        self.privMsg(event,"---Commands avaliable to you---")
         for cmd in commands:
-            self.notify(event,self.bot.callsign+":"+cmd)
-        self.notify(event,"-------------------------------")
+            self.privMsg(event,self.bot.callsign+":"+cmd)
+        self.privMsg(event,"-------------------------------")
 
        
 class flushLog(Command):
@@ -234,7 +243,7 @@ class flushLog(Command):
 
 
 class say(Command):
-    guments = []
+    arguments = []
     permissionLevel = 3
     permitExtraArgs = True
     manArgCheck = False
@@ -243,6 +252,7 @@ class say(Command):
     
     def on_call(self, event, *args):
         self.bot.sendPubMsg(event," ".join(args))
-        
-        
+
+
+            
         

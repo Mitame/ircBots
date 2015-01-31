@@ -21,6 +21,10 @@ class BaseBot(irc.bot.SingleServerIRCBot):
         self.callsign = settings.callsign
         self.logfile = settings.chatlog
         
+    def die(self,event, msg="Bye, cruel world!"):
+        for x in self.commands.keys():
+            self.commands[x].on_die(event)
+        irc.bot.SingleServerIRCBot.die(self, event,msg=msg)
     
     def isPermitted(self,event):
         return event.source.nick in settings.manOplist
@@ -38,7 +42,7 @@ class BaseBot(irc.bot.SingleServerIRCBot):
         else:
             return 0
     def on_nicknameinuse(self,c,event):
-        nick(c.get_nickname()+ "_")
+        c.nick(c.get_nickname()+ "_")
         
     def on_welcome(self,c,event):
         c.join(self.channelName)
@@ -124,11 +128,12 @@ class BaseBot(irc.bot.SingleServerIRCBot):
                         else:
                             args[x] = float(args[x])
                     elif cmdclass.arguments[x] == "str":
-                        if cmdclass.defaultArgs[x] == "":
-                            cmdclass.on_fail(event)
-                            return
-                        else:
-                            args[x] = cmdclass.defaultArgs[x]
+                        if len(cmdclass.defaultArgs) > x:
+                            if cmdclass.defaultArgs[x] == "":
+                                cmdclass.on_fail(event)
+                                return
+                            else:
+                                args[x] = cmdclass.defaultArgs[x]
             else:
                 if cmdclass.checkArgs(event,*args):
                     pass
@@ -140,8 +145,9 @@ class BaseBot(irc.bot.SingleServerIRCBot):
                 
         
 def main():
-    import commands
     bot = BaseBot(irc.bot.ServerSpec("home.mrmindimplosion.co.uk",6667),"#BANANARAMA","PollBot")
+    
+    import commands
     commands.ping(bot)
     commands.die(bot)
     commands.cnJoke(bot)
@@ -149,6 +155,10 @@ def main():
     commands.help(bot)
     commands.flushLog(bot)
     commands.say(bot)
+    
+    import textAdv
+    textAdv.cca(bot)
+    
     bot.start()
 
 if __name__ == "__main__":
