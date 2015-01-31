@@ -8,7 +8,7 @@ class settings():
     callsign = "village"
     botPrefix = ""
     manOplist = ["AlexCarolan","MrMindImplosion","Humanhum"]
-    allowExclaimCommand = True
+    allowExclaimCommand = False
     
 class BaseBot(irc.bot.SingleServerIRCBot):
     def __init__(self,serverspec,channel,nickname="MMI-BaseBot"):
@@ -52,9 +52,8 @@ class BaseBot(irc.bot.SingleServerIRCBot):
         self.do_command(event,event.arguments[0])
     
     def on_pubmsg(self,c,event):
-        self.logfile.write(("<%s>: "+event.arguments[0]+"\n") % event.source.nick)
-        if "the greater good" in event.arguments[0].lower():
-            self.sendMsg(event, "The greater good.")
+        if "for the greater good" in event.arguments[0].lower():
+            self.sendMsg(event, "The greater good!")
     def sendMsg(self,event,msg):
         self.connection.privmsg(self.channelName, msg)
     
