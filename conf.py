@@ -1,6 +1,6 @@
 class settings():
-	host = "irc.rizon.net"
-	port = 6667
+    host = "irc.rizon.net"
+    port = 6667
     channel = "#BrokenBots"
     callsign = "pollbot"
     name = "PollBot"
