@@ -62,3 +62,6 @@ logcat.txt
 
 #gedit backup files
 *~
+
+#Project specific files
+conf.py
