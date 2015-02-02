@@ -52,7 +52,7 @@ class BaseBot(irc.bot.SingleServerIRCBot):
     
     def on_pubmsg(self,c,event):
         try:
-            self.chatlog.write(("<%s>: "+event.arguments[0]+"\n") % event.source.nick)
+            self.chatlog.write(("<%s>: " % event.source.nick)+event.arguments[0]+"\n")
         except NameError:
             pass
         
