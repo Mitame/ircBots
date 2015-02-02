@@ -2,22 +2,21 @@
 import irc.bot
 import irc
 from socket import gethostbyname
-
-
-class settings():
-    callsign = "village"
-    botPrefix = ""
-    manOplist = ["AlexCarolan","MrMindImplosion","Humanhum"]
-    allowExclaimCommand = False
     
 class BaseBot(irc.bot.SingleServerIRCBot):
-    def __init__(self,serverspec,channel,nickname="MMI-BaseBot"):
+    def __init__(self,serverspec,channel,nickname,callsign,manOplist,chatlog,allowExclaim,textPrefix,textPostfix):
         serverspec.host = gethostbyname(serverspec.host)
-        nickname = settings.botPrefix + nickname
+        nickname = nickname
         irc.bot.SingleServerIRCBot.__init__(self, [serverspec], nickname, nickname)
         self.channelName = channel
         self.commands = {}
-        self.callsign = settings.callsign
+        
+        self.callsign = callsign
+        self.manOplist = manOplist
+        self.chatlog = chatlog
+        self.allowExclaimCommand = allowExclaim
+        self.textPrefix = textPrefix
+        self.textPostfix = textPostfix
         
     def die(self,event, msg="Bye, cruel world!"):
         try:
@@ -26,15 +25,15 @@ class BaseBot(irc.bot.SingleServerIRCBot):
         except:
             pass
         irc.bot.SingleServerIRCBot.die(self, msg=msg)
-    
+        
     def isPermitted(self,event):
-        return event.source.nick in settings.manOplist
+        return event.source.nick in self.manOplist
     
     def isOp(self,event):
         return self.channels[self.channelName].is_oper(event.source.nick)
     
     def getPermLevel(self,event):
-        if event.source.nick in settings.manOplist:
+        if event.source.nick in self.manOplist:
             return 3
         elif self.channels[self.channelName].is_oper(event.source.nick):
             return 2
@@ -47,6 +46,8 @@ class BaseBot(irc.bot.SingleServerIRCBot):
         
     def on_welcome(self,c,event):
         c.join(self.channelName)
+        print("Joined!")
+        self.sendMsg(event, "%s is here Bitches!" % self.connection.nickname)
     
     def on_privmsg(self,c,event):
         self.do_command(event,event.arguments[0])
@@ -54,6 +55,9 @@ class BaseBot(irc.bot.SingleServerIRCBot):
     def on_pubmsg(self,c,event):
         if "for the greater good" in event.arguments[0].lower():
             self.sendMsg(event, "The greater good!")
+            
+
+
     def sendMsg(self,event,msg):
         self.connection.privmsg(self.channelName, msg)
     
@@ -81,7 +85,8 @@ class BaseBot(irc.bot.SingleServerIRCBot):
         if cmd.lower() in self.commands.keys():
             cmdclass = self.commands[cmd.lower()]
             if cmdclass.permissionLevel == -1:
-                cmdclass.checkPermissions(event,*args)
+                if not cmdclass.checkPermissions(event,*args):
+                    return
             else:
                 if self.getPermLevel(event) < cmdclass.permissionLevel:
                     self.connection.notice(event.source.nick, "This command requires elevated privilages, which you do not possess. Level %s privilages are required." % str(cmdclass.permissionLevel))
@@ -127,13 +132,4 @@ class BaseBot(irc.bot.SingleServerIRCBot):
                     return 
             cmdclass.on_call(event,*args)
         else:
-            self.connection.notice(event.source.nick,"%s is not a valid command." % cmd)
-        
-        
-def main():
-    import sys
-    bot = BaseBot(irc.bot.ServerSpec("home.mrmindimplosion.co.uk",6667),sys.argv[2],sys.argv[1])
-    bot.start()
-
-if __name__ == "__main__":
-    main()
+            self.connection.notice(event.source.nick,"%s is not a valid command." % cmd)  

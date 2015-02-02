@@ -2,7 +2,7 @@ import pexpect
 import time
 import threading
 
-from commands import Command
+from mainbot.commands import Command
 
 class cca(Command):
     arguments = ["str"]

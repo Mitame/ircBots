@@ -26,7 +26,10 @@ class Command():
         pass
     
     def privMsg(self,event,msg):
-        self.bot.connection.notice(event.source.nick,msg)
+        if type(event) == str:
+            self.bot.connection.notice(event,msg)
+        else:
+            self.bot.connection.notice(event.source.nick,msg)
     
     def on_die(self,event):
         pass
@@ -258,7 +261,6 @@ class op(Command):
     callname = "op"
     
     def on_call(self, event, *args):
-        print(args[0])
         self.bot.connection.mode("#BANANARAMA","+o %s" % args[0])
 
 class deop(Command):
@@ -270,7 +272,4 @@ class deop(Command):
     callname = "deop"
     
     def on_call(self, event, *args):
-        print(args[0])
         self.bot.connection.mode("#BANANARAMA","-o %s" % args[0])
-            
-        
