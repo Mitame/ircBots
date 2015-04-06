@@ -14,7 +14,9 @@ Dependencies
 
 ####For Commands/fun (These can be disabled)
 [pyfiglet](https://pypi.python.org/pypi/pyfiglet) for generating ascii clocks in ```asciiClock()``` command.
+
 [cowsay](http://en.wikipedia.org/wiki/Cowsay) for generating cowsay ascii art in ```cowsay()``` command.
+
 [pexpect](http://pexpect.sourceforge.net/pexpect.html) and [adventure](http://en.wikipedia.org/wiki/Colossal_Cave_Adventure) for ```cca()``` command.
 
 
