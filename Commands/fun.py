@@ -1,10 +1,9 @@
-from mainbot.commands import Command
-
-import datetime
 import time
-import pyfiglet
 import os
 import shlex
+
+from mainbot.commands import Command
+import pyfiglet
 
 class slap(Command):
     arguments = ["str"]

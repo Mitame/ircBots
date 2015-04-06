@@ -1,8 +1,9 @@
-import pexpect
-import time
 import threading
+import os
+import pexpect
 
 from mainbot.commands import Command
+
 
 class cca(Command):
     arguments = ["str"]
@@ -11,8 +12,17 @@ class cca(Command):
     manArgCheck = False
     defaultArgs = []
     callName = "cca"
-    
-        
+
+    def __init__(self,bot):
+        #requirement check
+        for directory in os.environ["PATH"].split(":"):
+            if os.path.exists(os.path.join(directory,"adventure")):
+                Command.__init__(self,bot)
+                break
+        else:
+            raise FileNotFoundError("Executable 'adventure' was not found. \n\
+            Try installing 'bsdgames' or disable the 'cca' command.")
+
     def on_call(self,event,*args):
         base = args[0].lower()
         if base == "start":

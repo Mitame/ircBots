@@ -8,7 +8,7 @@ def main():
     bot = BaseBot(irc.bot.ServerSpec(settings.host,settings.port,settings.servPass),
                     settings.channel,settings.name,settings.callSign,
                     settings.manOpList,settings.chatLog,
-                    settings.allowExclaimCommand,settings.textPrefix,
+                    settings.commandPrefix,settings.textPrefix,
                     settings.textPostfix)
     
     import mainbot.commands as commands

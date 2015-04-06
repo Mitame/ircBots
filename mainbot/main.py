@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
+from socket import gethostbyname
+
 import irc.bot
 import irc
-from socket import gethostbyname
-    
+
+
 class BaseBot(irc.bot.SingleServerIRCBot):
-    def __init__(self,serverspec,channel,nickname,callsign,manOplist,chatlog,allowExclaim,textPrefix,textPostfix):
+    def __init__(self,serverspec,channel,nickname,callsign,manOplist,chatlog,commandPrefix,textPrefix,textPostfix):
         serverspec.host = gethostbyname(serverspec.host)
         nickname = nickname
         irc.bot.SingleServerIRCBot.__init__(self, [serverspec], nickname, nickname)
@@ -14,7 +16,8 @@ class BaseBot(irc.bot.SingleServerIRCBot):
         self.callsign = callsign
         self.manOplist = manOplist
         self.chatlog = chatlog
-        self.allowExclaimCommand = allowExclaim
+        self.allowExclaimCommand = commandPrefix is not None
+        self.commandPrefix = commandPrefix
         self.textPrefix = textPrefix
         self.textPostfix = textPostfix
         
@@ -62,18 +65,16 @@ class BaseBot(irc.bot.SingleServerIRCBot):
             self.do_command(event,a[1].strip())
         
         if self.allowExclaimCommand:
-            if event.arguments[0].strip()[0] == "!":
+            if event.arguments[0].strip()[0] == self.commandPrefix:
                 if event.arguments[0].split(" ")[0][1:] in self.commands.keys():
                     self.do_command(event, event.arguments[0].strip()[1:])
-        
-        
         return
     
-    def sendMsg(self,event,msg):
-        self.connection.privmsg(self.channelName, msg)
+    def sendMsg(self,event,message):
+        self.connection.privmsg(self.channelName, self.textPrefix+message+self.textPostfix)
     
     def sendPubMsg(self,event,message):
-        self.connection.privmsg(self.channelName, message)
+        self.connection.privmsg(self.channelName, self.textPrefix+message+self.textPostfix)
 
     def on_dccmsg(self,c,event):
         c.privmsg("You said: "+ event.arguments[0])

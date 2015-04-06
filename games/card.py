@@ -1,6 +1,8 @@
-from mainbot.commands import Command
 import random
 import copy
+
+from mainbot.commands import Command
+
 
 class cardClasses():
     
