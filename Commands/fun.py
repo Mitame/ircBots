@@ -2,10 +2,9 @@ from mainbot.commands import Command
 
 import datetime
 import time
-import urllib.request
-import urllib.parse
-import json
 import pyfiglet
+import os
+import shlex
 
 class slap(Command):
     arguments = ["str"]
@@ -13,7 +12,7 @@ class slap(Command):
     permitExtraArgs = False
     manArgCheck = False
     defaultArgs = []
-    callname = "slap"
+    callName = "slap"
     
     def on_call(self, event, *args):
         print(args[0])
@@ -25,7 +24,7 @@ class asciiClock(Command):
     permitExtraArgs = False
     manArgCheck = False
     defaultArgs = []
-    callname = "time"
+    callName = "time"
     
     def on_call(self,event,*args):
         font = pyfiglet.Figlet()
@@ -35,5 +34,20 @@ class asciiClock(Command):
             if line != "":
                 self.pubMsg(event,line)
         
+class cowsay(Command):
+    arguments = ["str"]
+    permissionLevel = 0
+    permitExtraArgs = True
+    manArgCheck = False
+    defaultArgs = []
+    callName = "cowsay"
+    
+    def on_call(self,event,*args):
+        y = os.popen("cowsay " + shlex.quote(" ".join(args)))
+        for line in y.read().split("\n"):
+            self.pubMsg(event,line)
+
+
+    
                                    
         

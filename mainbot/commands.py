@@ -1,23 +1,26 @@
 #!/usr/bin/env python3
 
+import json
+import urllib.request
+
 class Command():
     arguments = []
     permissionLevel = 0
     permitExtraArgs = False
     manArgCheck = False
     defaultArgs = []
-    callname = ""
+    callName = ""
     
     def __init__(self,bot):
         self.bot = bot
-        bot.commands[self.callname] = self
+        bot.commands[self.callName] = self
     
     def on_call(self,event,*args):
         self.bot.do_command("help "+" ".join(args))
     
     def on_fail(self,event):
         self.notify(event.source.nick,\
-        "The command must follow the syntax: /%s "% self.callname+" "+str(self.arguments))
+        "The command must follow the syntax: /%s "% self.callName+" "+str(self.arguments))
     
     def checkPermissions(self,event,*args):
         pass
@@ -42,7 +45,7 @@ class ping(Command):
     arguments = []
     permissionLevel = 2
     permitExtraArgs = False
-    callname = "ping"
+    callName = "ping"
     defaultArgs = []
     
     def on_call(self,event,*args):
@@ -53,7 +56,7 @@ class die(Command):
     arguments = []
     permissionLevel = 3
     permitExtraArgs = False
-    callname = "die"
+    callName = "die"
     defaultArgs = []
     
     def on_call(self,event,*args):
@@ -64,14 +67,12 @@ class cnJoke(Command):
     arguemnts = []
     permissionLevel = 0
     permitExtraArgs = False
-    callname = "cnjoke"
+    callName = "cnjoke"
     defaultArgs = []
     
     def __init__(self,*args,**kwargs):
         Command.__init__(self,*args,**kwargs)
-        global json, urllib
-        import json
-        import urllib.request
+
 
     def on_call(self,event,*args):
         x = urllib.request.urlopen("http://api.icndb.com/jokes/random")
@@ -84,7 +85,7 @@ class cnJoke(Command):
     
     def on_fail(self,event):
         self.notify(event.source.nick,\
-        "You failed to type the command correctly puny human. \nChuck Norris will roundhouse kick you in the face shortly."% self.callname+" "+str(self.arguments))
+        "You failed to type the command correctly puny human. \nChuck Norris will roundhouse kick you in the face shortly."% self.callName+" "+str(self.arguments))
 
 
 class vote(Command):
@@ -93,7 +94,7 @@ class vote(Command):
     permitExtraArgs = True
     manArgCheck = True
     defaultArgs = []
-    callname = "vote"
+    callName = "vote"
     
     class poll():
         def __init__(self,*args):
@@ -212,7 +213,7 @@ class help(Command):
     permitExtraArgs = False
     manArgCheck = False
     defaultArgs = []
-    callname = "help"
+    callName = "help"
     
     def on_call(self,event,*args):
         commands = []
@@ -235,7 +236,7 @@ class flushLog(Command):
     permitExtraArgs = False
     manArgCheck = False
     defaultArgs = []
-    callname = "flushlog"  
+    callName = "flushlog"
     
     def on_call(self, event, *args):
         self.bot.logfile.flush()
@@ -247,7 +248,7 @@ class say(Command):
     permitExtraArgs = True
     manArgCheck = False
     defaultArgs = []
-    callname = "say"
+    callName = "say"
     
     def on_call(self, event, *args):
         self.bot.sendPubMsg(event," ".join(args))
@@ -258,7 +259,7 @@ class op(Command):
     permitExtraArgs = False
     manArgCheck = False
     defaultArgs = []
-    callname = "op"
+    callName = "op"
     
     def on_call(self, event, *args):
         self.bot.connection.mode("#BANANARAMA","+o %s" % args[0])
@@ -269,7 +270,7 @@ class deop(Command):
     permitExtraArgs = False
     manArgCheck = False
     defaultArgs = []
-    callname = "deop"
+    callName = "deop"
     
     def on_call(self, event, *args):
         self.bot.connection.mode("#BANANARAMA","-o %s" % args[0])

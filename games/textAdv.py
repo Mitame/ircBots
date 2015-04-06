@@ -10,7 +10,7 @@ class cca(Command):
     permitExtraArgs = True
     manArgCheck = False
     defaultArgs = []
-    callname = "cca"
+    callName = "cca"
     
         
     def on_call(self,event,*args):

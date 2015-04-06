@@ -56,7 +56,7 @@ class BaseBot(irc.bot.SingleServerIRCBot):
             self.chatlog.write(("<%s>: " % event.source.nick)+event.arguments[0]+"\n")
         except NameError:
             pass
-        
+
         a = event.arguments[0].split(":", 1)
         if len(a) > 1 and a[0].lower() == self.callsign:
             self.do_command(event,a[1].strip())

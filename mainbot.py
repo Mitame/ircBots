@@ -5,9 +5,9 @@ from conf import settings
 
 def main():
     from mainbot.main import BaseBot
-    bot = BaseBot(irc.bot.ServerSpec(settings.host,settings.port),
-                    settings.channel,settings.name,settings.callsign,
-                    settings.manOplist,settings.chatlog,
+    bot = BaseBot(irc.bot.ServerSpec(settings.host,settings.port,settings.servPass),
+                    settings.channel,settings.name,settings.callSign,
+                    settings.manOpList,settings.chatLog,
                     settings.allowExclaimCommand,settings.textPrefix,
                     settings.textPostfix)
     
