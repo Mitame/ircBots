@@ -67,7 +67,7 @@ class youTubeScanner(TextReader):
 
 
 class imgurScanner(TextReader):
-    regExp = "(?<=imgur.com/)[^?&]*"
+    regExp = "(?<=imgur.com/)[^?& ]*"
 
     def __init__(self,bot,id,secret):
         TextReader.__init__(self,bot)
