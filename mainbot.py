@@ -32,7 +32,7 @@ def main():
     import mainbot.textReaders
     mainbot.textReaders.youTubeScanner(bot,open("youtube.apikey","r").read().strip())
 
-    mainbot.textReaders.imgurScanner(bot,*open("imgur.apikey").read().split("\n"))
+    mainbot.textReaders.imgurScanner(bot,*open("imgur.apikey").read().strip().split("\n"))
 
     bot.start()
 
