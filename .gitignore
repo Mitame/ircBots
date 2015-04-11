@@ -65,3 +65,5 @@ logcat.txt
 
 #Project specific files
 conf.py
+
+*.apikey

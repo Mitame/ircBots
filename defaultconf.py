@@ -8,12 +8,13 @@ class settings():
     name = "UnNamedBot"
     manOpList = ["Oper1","Oper2","Oper3"]
     chatLog = open("./irclogs/chat.log","a")
-    commandPrefix = "!"
+    commandPrefix = "!"                         #Leave as "" to disallow
     textPrefix = "\x0306,99"
     textPostfix = "\x03\z02"
     nickPass = "password"
+    nickServ = "NickServ"                       #Leave as "" for now password
     servPass = ""
-    version = 3
+    version = 4
 
 if defaultconf.settings.version > settings.version:
     raise ImportWarning("More settings have been added, please update your conf.py.")

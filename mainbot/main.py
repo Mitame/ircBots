@@ -1,17 +1,22 @@
 #!/usr/bin/env python3
 from socket import gethostbyname
+import re
 
 import irc.bot
 import irc
 
+from mainbot.autoCommand import NickServLogin
+
 
 class BaseBot(irc.bot.SingleServerIRCBot):
-    def __init__(self,serverspec,channel,nickname,callsign,manOplist,chatlog,commandPrefix,textPrefix,textPostfix):
+    def __init__(self,serverspec,channel,nickname,callsign,manOplist,chatlog,commandPrefix,textPrefix,textPostfix,textReplacements,nickPass,nickServ):
         serverspec.host = gethostbyname(serverspec.host)
         nickname = nickname
         irc.bot.SingleServerIRCBot.__init__(self, [serverspec], nickname, nickname)
         self.channelName = channel
+
         self.commands = {}
+        self.textReaders = {}
         
         self.callsign = callsign
         self.manOplist = manOplist
@@ -20,7 +25,11 @@ class BaseBot(irc.bot.SingleServerIRCBot):
         self.commandPrefix = commandPrefix
         self.textPrefix = textPrefix
         self.textPostfix = textPostfix
-        
+        self.textReplacements = textReplacements
+        self.nickPass = nickPass
+        self.nickServ = nickServ
+
+
     def die(self,event, msg="Bye, cruel world!"):
         try:
             for x in self.commands.keys():
@@ -48,6 +57,12 @@ class BaseBot(irc.bot.SingleServerIRCBot):
         c.nick(c.get_nickname()+ "_")
         
     def on_welcome(self,c,event):
+
+        #login to nickserv if needed
+        if self.nickPass != "":
+            NickServLogin(self)
+        self.commands["login"].on_call(None)
+
         c.join(self.channelName)
     
     def on_privmsg(self,c,event):
@@ -59,6 +74,14 @@ class BaseBot(irc.bot.SingleServerIRCBot):
             self.chatlog.write(("<%s>: " % event.source.nick)+event.arguments[0]+"\n")
         except NameError:
             pass
+
+
+        for regexp in self.textReaders.keys():
+            positions = re.search(regexp,event.arguments[0])
+            if positions is not None:
+                self.textReaders[regexp].on_call(event,positions)
+
+
 
         a = event.arguments[0].split(":", 1)
         if len(a) > 1 and a[0].lower() == self.callsign:
@@ -74,9 +97,12 @@ class BaseBot(irc.bot.SingleServerIRCBot):
         self.connection.privmsg(self.channelName, self.textPrefix+message+self.textPostfix)
     
     def sendPubMsg(self,event,message):
+        for replacement in self.textReplacements:
+            message = message.replace(*replacement)
         self.connection.privmsg(self.channelName, self.textPrefix+message+self.textPostfix)
 
     def on_dccmsg(self,c,event):
+        print(event.arguments[0])
         c.privmsg("You said: "+ event.arguments[0])
     
     def on_dccchat(self, c, event):
@@ -90,7 +116,15 @@ class BaseBot(irc.bot.SingleServerIRCBot):
             except ValueError:
                 return
             self.dcc_connect(address, port)
-    
+
+
+    def registerCommand(self,command):
+        self.commands[command.callName] = command
+
+    def registerTextReader(self,textReader):
+        self.textReaders[textReader.re] = textReader
+
+
     def do_command(self,event,cmd):
         args = cmd.split(" ")[1:]
         cmd = cmd.split(" ")[0]

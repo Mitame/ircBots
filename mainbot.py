@@ -9,7 +9,7 @@ def main():
                     settings.channel,settings.name,settings.callSign,
                     settings.manOpList,settings.chatLog,
                     settings.commandPrefix,settings.textPrefix,
-                    settings.textPostfix)
+                    settings.textPostfix,settings.textReplacements,settings.nickPass,settings.nickServ)
     
     import mainbot.commands as commands
     commands.ping(bot)
@@ -23,7 +23,17 @@ def main():
    
     import games.textAdv
     games.textAdv.cca(bot)
-    
+
+    import Commands.fun
+    Commands.fun.asciiClock(bot)
+    Commands.fun.cowsay(bot)
+    Commands.fun.slap(bot)
+
+    import mainbot.textReaders
+    mainbot.textReaders.youTubeScanner(bot,open("youtube.apikey","r").read().strip())
+
+    mainbot.textReaders.imgurScanner(bot,*open("imgur.apikey").read().split("\n"))
+
     bot.start()
 
 if __name__ == "__main__":

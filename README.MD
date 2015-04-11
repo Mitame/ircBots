@@ -19,6 +19,11 @@ Dependencies
 
 [pexpect](http://pexpect.sourceforge.net/pexpect.html) and [adventure](http://en.wikipedia.org/wiki/Colossal_Cave_Adventure) for ```cca()``` command.
 
+[google-api-python-client] For ```mainbot.textReaders.youTubeScanner``` and a YouTube Data API key.
+
+[imgurpython](https://github.com/Imgur/imgurpython) For ```mainbot.textReaders.imgurScanner```
+
+
 
 
 Running a bot

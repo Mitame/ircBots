@@ -13,7 +13,7 @@ class Command():
     
     def __init__(self,bot):
         self.bot = bot
-        bot.commands[self.callName] = self
+        self.bot.registerCommand(self)
     
     def on_call(self,event,*args):
         self.bot.do_command("help "+" ".join(args))
@@ -262,7 +262,7 @@ class op(Command):
     callName = "op"
     
     def on_call(self, event, *args):
-        self.bot.connection.mode("#BANANARAMA","+o %s" % args[0])
+        self.bot.connection.mode(self.bot.channelName,"+o %s" % args[0])
 
 class deop(Command):
     arguments = ["str"]
@@ -273,4 +273,15 @@ class deop(Command):
     callName = "deop"
     
     def on_call(self, event, *args):
-        self.bot.connection.mode("#BANANARAMA","-o %s" % args[0])
+        self.bot.connection.mode(self.bot.channelName,"-o %s" % args[0])
+
+class NickServLogin(Command):
+    arguments = []
+    permissionLevel = 3
+    permitExtraArgs = False
+    manArgCheck = False
+    defaultArgs = []
+    callName = "login"
+
+    def on_call(self,event,*args):
+        self.privMsg("NickServ","identify %s" % self.bot.NickPass)
