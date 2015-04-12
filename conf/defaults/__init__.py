@@ -1,4 +1,4 @@
-import defaultconf
+from conf.defaults import mysql
 
 class settings():
     host = "irc.freenode.net"
@@ -15,6 +15,3 @@ class settings():
     nickServ = "NickServ"                       #Leave as "" for now password
     servPass = ""
     version = 4
-
-if defaultconf.settings.version > settings.version:
-    raise ImportWarning("More settings have been added, please update your conf.py.")
