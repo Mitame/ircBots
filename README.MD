@@ -28,7 +28,7 @@ Dependencies
 
 Running a bot
 -------------
-1. Copy defaultconf.py to conf.py and edit it to your liking.
+1. Copy ```conf/defaultconf.py``` to ```conf/__init__.py``` and edit it to your liking.
 2. Copy mainbot.py and edit to your liking. Comment out lines to remove commands.
 
 Creating commands
